@@ -29,14 +29,25 @@ class FunnelConversion
     @goal_id = options[:goal_id]
   end
 
+  def data start_date, end_date
+    response = @ga.get({ start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["goal#{@goal_id}AbandonRate"] })
+    doc = Nokogiri::XML response.xml
+  end
+
   def todays_conversion_rate
     today = Date.today.to_s
-    data = @ga.get({ start_date:  '2014-07-19', end_date:  '2014-07-20', dimensions:  ['day','month', 'year'], metrics:  ['goal4AbandonRate'], max_results:  25 })
-    doc = Nokogiri::XML data.xml
+    doc = data(today, today)
     entry = FunnelEntry.new(doc.at('entry'), @goal_id)
     entry.conversion_rate
   end
 
+  def last_x_days_completion_rates days
+    yesterday = (Date.today - 1).to_s
+    start = (Date.today - days).to_s
+    doc = data(start, yesterday)
+    entries = (doc/'entry').map { |e| FunnelEntry.new(e, @goal_id) }
+
+    entries.map {|e| [e.date, e.conversion_rate] }
+  end
+
 end
-
-

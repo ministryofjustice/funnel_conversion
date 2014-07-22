@@ -9,8 +9,25 @@ class FunnelConversionRate < Sinatra::Base
     %Q|{
       "item": [
         {
-          "text": "#{rate.round(2)}%"
+          "text": "#{rate.round(1)}%"
         }
+      ]
+    }|
+  end
+
+  get '/last_x_days_completion_rate/:days/:profile_id/:goal_id' do
+    funnel = FunnelConversion.new(profile_id: params[:profile_id], goal_id: params[:goal_id])
+    rates = funnel.last_x_days_completion_rates(Integer(params[:days]))
+    values = rates.map(&:last)
+    average = (values.reduce(:+) / values.size).round(1)
+    values = values.map{|v| v.round(1).to_s }
+    %Q|{
+      "item": [
+        {
+          "text": "Past #{params[:days]} days",
+          "value": "#{average}"
+        },
+        #{values}
       ]
     }|
   end
