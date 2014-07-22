@@ -9,7 +9,7 @@ class FunnelConversionRate < Sinatra::Base
     %Q|{
       "item": [
         {
-          "text": "#{rate.round(1)}%"
+          "text": "<div class='main-stat t-size-x60'>#{rate.round(1)}%</div>"
         }
       ]
     }|
