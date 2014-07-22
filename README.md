@@ -26,7 +26,7 @@ You then have access to two URL endpoints.
 
 Today's completion rate, for use with geckoboard 'Text' Custom Widget:
 
-    http://[your-app-name].herokuapp.com/todays_completion_rate/[days]/[profile_id]/[goal_id]
+    http://[your-app-name].herokuapp.com/todays_completion_rate/[profile_id]/[goal_id]
 
 Last x days completion rate, for use with geckoboard 'Number and Secondary Stat' Custom Widget:
 
