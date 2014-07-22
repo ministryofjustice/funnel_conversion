@@ -25,7 +25,7 @@ class FunnelConversionRate < Sinatra::Base
       "item": [
         {
           "text": "Past #{params[:days]} days",
-          "value": "#{average}"
+          "value": "#{average}%"
         },
         #{values}
       ]
