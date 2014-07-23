@@ -1,6 +1,9 @@
 funnel_conversion
 =================
 
+Deploying to Heroku
+-------------------
+
 Commands to get started:
 
     git clone git@github.com:ministryofjustice/funnel_conversion.git
@@ -22,13 +25,16 @@ Commands to get started:
 
     git push heroku master
 
-You then have access to two URL endpoints.
+API Usage
+---------
 
-Today's completion rate, for use with geckoboard 'Text' Custom Widget:
+There are two URL endpoints.
+
+1. Today's completion rate, for use with Geckoboard's 'Text' Custom Widget:
 
     http://[your-app-name].herokuapp.com/todays_completion_rate/[profile_id]/[goal_id]
 
-Last x days completion rate, for use with geckoboard 'Number and Secondary Stat' Custom Widget:
+2. Last x days completion rate, for use with Geckoboard's 'Number and Secondary Stat' Custom Widget:
 
     http://[your-app-name].herokuapp.com/last_x_days_completion_rate/[days]/[profile_id]/[goal_id]
 
