@@ -30,12 +30,12 @@ API Usage
 
 There are two URL endpoints.
 
-1. Today's completion rate, for use with Geckoboard's 'Text' Custom Widget:
+* Today's completion rate, for use with Geckoboard's 'Text' Custom Widget:
 
 
     http://[your-app-name].herokuapp.com/todays_completion_rate/[profile_id]/[goal_id]
 
-2. Last x days completion rate, for use with Geckoboard's 'Number and Secondary Stat' Custom Widget:
+* Last x days completion rate, for use with Geckoboard's 'Number and Secondary Stat' Custom Widget:
 
 
     http://[your-app-name].herokuapp.com/last_x_days_completion_rate/[days]/[profile_id]/[goal_id]
