@@ -4,7 +4,6 @@ require_relative 'funnel_conversion'
 class FunnelConversionRate < Sinatra::Base
 
   get '/todays_completion_rate/:profile_id/:goal_id' do
-    funnel = FunnelConversion.new(profile_id: params[:profile_id], goal_id: params[:goal_id])
     rate = funnel.todays_conversion_rate
     %Q|{
       "item": [
@@ -16,7 +15,6 @@ class FunnelConversionRate < Sinatra::Base
   end
 
   get '/last_x_days_completion_rate/:days/:profile_id/:goal_id' do
-    funnel = FunnelConversion.new(profile_id: params[:profile_id], goal_id: params[:goal_id])
     rates = funnel.last_x_days_completion_rates(Integer(params[:days]))
     values = rates.map(&:last)
     average = (values.reduce(:+) / values.size).round(1)
@@ -32,4 +30,26 @@ class FunnelConversionRate < Sinatra::Base
     }|
   end
 
+  get '/last_x_days_error_exit_counts/:days/:profile_id/:goal_id' do
+    counts = funnel.event_exit_counts(Integer(params[:days]))[0..2]
+    items = counts.map do |c|
+      %Q|{
+        "title": {
+          "text": "#{c.event_label}"
+        },
+        "label": {
+          "name": "#{c.exit_page}",
+          "color": "#ff2015"
+        },
+        "description": "#{c.unique_count} occurrences"
+      }|
+    end
+    %Q|[ #{items.join(",\n")} ]|
+  end
+
+  private
+
+  def funnel
+    FunnelConversion.new(profile_id: params[:profile_id], goal_id: params[:goal_id])
+  end
 end
