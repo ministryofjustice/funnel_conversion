@@ -12,6 +12,8 @@ Commands to get started:
 
     bundle
 
+    brew install heroku-toolbelt
+    
     heroku create --region eu
 
     heroku apps:rename [your-app-name]
