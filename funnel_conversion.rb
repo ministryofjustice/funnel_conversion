@@ -5,6 +5,10 @@ module AnalyticsEntry
   def value attribute
     @entry.at(%Q|[name="ga:#{attribute}"]|)['value']
   end
+
+  def date
+    [ value('year'), value('month'), value('day') ].join('-')
+  end
 end
 
 class FunnelEntry
@@ -13,10 +17,6 @@ class FunnelEntry
   def initialize entry, goal_id
     @entry = entry
     @goal_id = goal_id
-  end
-
-  def date
-    [ value('year'), value('month'), value('day') ].join('-')
   end
 
   def conversion_rate
@@ -49,12 +49,30 @@ class EventExitEntry
   end
 end
 
+class SessionEntry
+  include AnalyticsEntry
+
+  def initialize entry
+    @entry = entry
+  end
+
+  def average_session_duration
+    (Float(value('avgSessionDuration')) / 60).round(2)
+  end
+end
+
 class FunnelConversion
 
   def initialize options
     @ga = Gattica.new({ email:  ENV['email'], password:  ENV['password'] })
     @ga.profile_id = options[:profile_id]
     @goal_id = options[:goal_id]
+  end
+
+  def average_session_time start_date, end_date
+    segment = 'gaid::Hi24nqAbTaqKKm2y8yupCQ'
+    response = @ga.get({ start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"], segment: segment })
+    doc = Nokogiri::XML response.xml
   end
 
   def data start_date, end_date
@@ -67,6 +85,15 @@ class FunnelConversion
     doc = data(today, today)
     entry = FunnelEntry.new(doc.at('entry'), @goal_id)
     entry.conversion_rate
+  end
+
+  def average_time days
+    yesterday = (Date.today - 1).to_s
+    start = (Date.today - days).to_s
+    doc = average_session_time(start, yesterday)
+    entries = (doc/'entry').map { |e| SessionEntry.new(e) }
+
+    entries.map {|e| [e.date, e.average_session_duration]}
   end
 
   def last_x_days_completion_rates days
