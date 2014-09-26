@@ -31,7 +31,7 @@ class FunnelConversionRate < Sinatra::Base
   end
 
   get '/last_x_days_average_session_time/:days/:profile_id' do
-    times = funnel.average_session_time(Integer(params[:days]))
+    times = funnel.average_time(Integer(params[:days]))
     values = times.map(&:last)
     average = (values.reduce(:+) / values.size).round(1)
     values = values.map{|v| v.round(1).to_s }
