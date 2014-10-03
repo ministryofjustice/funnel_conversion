@@ -53,10 +53,6 @@ class FunnelConversionRate < Sinatra::Base
         "title": {
           "text": "#{c.event_label}"
         },
-        "label": {
-          "name": "Failed to complete",
-          "color": "#ff2015"
-        },
         "description": "#{c.unique_count} occurrences"
       }|
     end
