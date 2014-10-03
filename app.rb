@@ -47,7 +47,7 @@ class FunnelConversionRate < Sinatra::Base
   end
 
   get '/last_x_days_error_exit_counts/:days/:profile_id/:goal_id' do
-    counts = funnel.event_exit_counts(Integer(params[:days]))[0..2]
+    counts = funnel.event_exit_counts(Integer(params[:days]))[0..4]
     items = counts.map do |c|
       %Q|{
         "title": {
