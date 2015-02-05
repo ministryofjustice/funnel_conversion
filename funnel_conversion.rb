@@ -70,8 +70,7 @@ class FunnelConversion
   end
 
   def average_session_time start_date, end_date
-    segment = 'gaid::Hi24nqAbTaqKKm2y8yupCQ'
-    response = @ga.get({ start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"], segment: segment })
+    response = @ga.get({ start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"] })
     doc = Nokogiri::XML response.xml
   end
 
