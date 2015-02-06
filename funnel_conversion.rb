@@ -72,7 +72,7 @@ class FunnelConversion
   def average_session_time start_date, end_date, segment_id
     params = { start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"] }
 
-    params.merge!{ segment: segment_id } if segment_id
+    params.merge!( segment: segment_id ) if segment_id
 
     response = @ga.get(params)
     doc = Nokogiri::XML response.xml
