@@ -69,9 +69,12 @@ class FunnelConversion
     @goal_id = options[:goal_id]
   end
 
-  def average_session_time start_date, end_date
-    segment = 'gaid::Hi24nqAbTaqKKm2y8yupCQ'
-    response = @ga.get({ start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"], segment: segment })
+  def average_session_time start_date, end_date, segment_id
+    params = { start_date:  start_date, end_date:  end_date, dimensions:  ['day','month', 'year'], metrics:  ["avgSessionDuration"] }
+
+    params.merge!{ segment: segment_id } if segment_id
+
+    response = @ga.get(params)
     doc = Nokogiri::XML response.xml
   end
 
@@ -87,10 +90,10 @@ class FunnelConversion
     entry.conversion_rate
   end
 
-  def average_time days
+  def average_time days, segment_id
     yesterday = (Date.today - 1).to_s
     start = (Date.today - days).to_s
-    doc = average_session_time(start, yesterday)
+    doc = average_session_time(start, yesterday, segment_id)
     entries = (doc/'entry').map { |e| SessionEntry.new(e) }
 
     entries.map {|e| [e.date, e.average_session_duration]}
