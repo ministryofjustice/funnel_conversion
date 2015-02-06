@@ -30,20 +30,12 @@ class FunnelConversionRate < Sinatra::Base
     }|
   end
 
+  get '/last_x_days_average_session_time/:days/:profile_id/:segment_id' do
+    average_session_time params[:segment_id]
+  end
+
   get '/last_x_days_average_session_time/:days/:profile_id' do
-    times = funnel.average_time(Integer(params[:days]))
-    values = times.map(&:last)
-    average = (values.reduce(:+) / values.size).round(1)
-    values = values.map{|v| v.round(1).to_s }
-    %Q|{
-      "item": [
-        {
-          "text": "Past #{params[:days]} days",
-          "value": "#{average}"
-        },
-        #{values}
-      ]
-    }|
+    average_session_time nil
   end
 
   get '/last_x_days_error_exit_counts/:days/:profile_id/:goal_id' do
@@ -60,6 +52,22 @@ class FunnelConversionRate < Sinatra::Base
   end
 
   private
+
+  def average_session_time segment_id
+    times = funnel.average_time(Integer(params[:days]), segment_id)
+    values = times.map(&:last)
+    average = (values.reduce(:+) / values.size).round(1)
+    values = values.map{|v| v.round(1).to_s }
+    %Q|{
+      "item": [
+        {
+          "text": "Past #{params[:days]} days",
+          "value": "#{average}"
+        },
+        #{values}
+      ]
+    }|
+  end
 
   def funnel
     FunnelConversion.new(profile_id: params[:profile_id], goal_id: params[:goal_id])
